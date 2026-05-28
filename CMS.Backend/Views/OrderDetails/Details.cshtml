@@ -1,0 +1,52 @@
+﻿@model CMS.Data.Entities.OrderDetail
+
+<div class="container mt-4">
+
+    <h2 class="text-primary mb-4">
+        CHI TIẾT ORDER DETAIL
+    </h2>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <p>
+                <strong>ID:</strong>
+                @Model.Id
+            </p>
+
+            <p>
+                <strong>Order ID:</strong>
+                @Model.OrderId
+            </p>
+
+            <p>
+                <strong>Product ID:</strong>
+                @Model.ProductId
+            </p>
+
+            <p>
+                <strong>Số lượng:</strong>
+                @Model.Quantity
+            </p>
+
+            <p>
+                <strong>Đơn giá:</strong>
+                @Model.UnitPrice.ToString("N0") VNĐ
+            </p>
+
+            <p class="fw-bold text-danger">
+                Thành tiền:
+                @((Model.Quantity * Model.UnitPrice).ToString("N0")) VNĐ
+            </p>
+
+            <a href="/OrderDetails"
+               class="btn btn-secondary">
+                Quay lại
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

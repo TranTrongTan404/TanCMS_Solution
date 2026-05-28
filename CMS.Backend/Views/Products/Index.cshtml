@@ -1,0 +1,62 @@
+﻿@model IEnumerable<CMS.Data.Entities.Product>
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">DANH SÁCH SẢN PHẨM</h2>
+
+        <button class="btn btn-success btn-sm">
+            + Thêm sản phẩm
+        </button>
+    </div>
+
+    <div class="row">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+
+                <div class="card shadow-sm h-100">
+
+                    <img src="@item.ImageUrl"
+                         class="card-img-top"
+                         alt="Product Image"
+                         style="height:220px; object-fit:cover;">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title text-dark">
+                            @item.Name
+                        </h5>
+
+                        <p class="text-muted">
+                            @item.Description
+                        </p>
+
+                        <p class="fw-bold text-danger">
+                            Giá: @item.Price.ToString("N0") VNĐ
+                        </p>
+
+                        <p class="text-secondary">
+                            Tồn kho: @item.StockQuantity
+                        </p>
+
+                        <p class="small text-muted">
+                            Danh mục ID: @item.CategoryProductId
+                        </p>
+
+                        <a href="/Products/Details/@item.Id"
+                           class="btn btn-outline-primary btn-sm">
+                            Xem chi tiết
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

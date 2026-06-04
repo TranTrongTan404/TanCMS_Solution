@@ -3,23 +3,70 @@ using CMS.Data;
 
 namespace CMS.Backend.Controllers
 {
-    // Khi chạy:
-    // https://localhost:xxxx/api/posts
     [Route("api/[controller]")]
-
-    // Đánh dấu đây là API Controller
     [ApiController]
-
-    // API dùng ControllerBase thay vì Controller
     public class PostsController : ControllerBase
     {
-        // Kết nối Database
         private readonly ApplicationDbContext _context;
 
-        // Constructor
         public PostsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        // GET: api/posts
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var posts = _context.Posts
+                .OrderByDescending(p => p.Id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Title,
+                    p.ImageUrl,
+                    p.CreatedDate,
+                    CategoryName = p.Category.Name
+                })
+                .ToList();
+
+            return Ok(posts);
+        }
+
+        // GET: api/posts/category/1
+        [HttpGet("category/{categoryId}")]
+        public IActionResult GetByCategory(int categoryId)
+        {
+            var posts = _context.Posts
+                .Where(p => p.CategoryId == categoryId)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Title,
+                    p.ImageUrl,
+                    p.CreatedDate
+                })
+                .ToList();
+
+            return Ok(posts);
+        }
+
+        // GET: api/posts/5
+        [HttpGet("{id}")]
+        public IActionResult GetDetail(int id)
+        {
+            var post = _context.Posts
+                .FirstOrDefault(p => p.Id == id);
+
+            if (post == null)
+            {
+                return NotFound(new
+                {
+                    message = "Không tìm thấy bài viết này trong hệ thống"
+                });
+            }
+
+            return Ok(post);
         }
     }
 }

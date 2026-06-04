@@ -32,7 +32,6 @@
 
 //app.Run();
 
-
 using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -47,6 +46,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Đăng ký MVC
 builder.Services.AddControllersWithViews();
 
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Khai báo dịch vụ xác thực Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -60,6 +74,13 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -72,6 +93,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Kích hoạt CORS
+app.UseCors("AllowAll");
 
 // BƯỚC A: Xác nhận "Anh là ai?"
 app.UseAuthentication();

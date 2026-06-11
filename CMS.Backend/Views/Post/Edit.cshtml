@@ -19,7 +19,7 @@
 
         <div class="card-body">
 
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
                 <input type="hidden" asp-for="Id" />
 
@@ -70,11 +70,24 @@
                         <div class="mb-3">
 
                             <label class="form-label fw-bold">
-                                Link ảnh:
+                                Ảnh hiện tại:
                             </label>
 
-                            <input asp-for="ImageUrl"
-                                   class="form-control" />
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl"
+                                     class="img-fluid rounded mb-2"
+                                     style="max-height:150px;" />
+                            }
+
+                            <label class="form-label fw-bold">
+                                Chọn ảnh mới:
+                            </label>
+
+                            <input type="file"
+                                   name="ImageFile"
+                                   class="form-control"
+                                   accept="image/*" />
 
                         </div>
 

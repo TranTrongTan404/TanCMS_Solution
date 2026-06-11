@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace CMS.Backend.Controllers
 {
@@ -74,8 +75,29 @@ namespace CMS.Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Post model)
+        public IActionResult Create(Post model, IFormFile ImageFile)
         {
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    ImageFile.CopyTo(stream);
+                }
+
+                model.ImageUrl = "/uploads/" + fileName;
+            }
+
             _context.Posts.Add(model);
 
             _context.SaveChanges();
@@ -108,8 +130,36 @@ namespace CMS.Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Post model)
+        public IActionResult Edit(Post model, IFormFile ImageFile)
         {
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    ImageFile.CopyTo(stream);
+                }
+
+                model.ImageUrl = "/uploads/" + fileName;
+            }
+            else
+            {
+                model.ImageUrl = _context.Posts
+                    .AsNoTracking()
+                    .FirstOrDefault(p => p.Id == model.Id)
+                    ?.ImageUrl;
+            }
+
             _context.Posts.Update(model);
 
             _context.SaveChanges();
